@@ -61,7 +61,7 @@ export default function Home() {
 
       {/* part2 */}
       <div className="flex justify-left gap-15 mt-8 px-8 flex-wrap" >
-        <h1 className="font-semibold text-[#61A9E5] flex justify-center gap-15 text-5xl mt-8 px-30 flex-wrap">How it work!!!</h1>
+        <h1 className="font-semibold text-[#61A9E5] flex justify-center gap-15 text-4xl mt-8 px-30 flex-wrap">How it work!!!</h1>
       </div>
        <section className="bg-[#EFFFFF] py-16 px-6 flex justify-center">
       <div className="relative bg-white shadow-lg rounded-2xl max-w-270 w-full h-90 flex flex-col md:flex-row items-center p-8 md:p-10">
@@ -116,7 +116,7 @@ export default function Home() {
 {/* PART3                                                       PART3*/}
     <div className=" min-h-screen flex flex-col items-center justify-center px-6 py-10">
       
-      <h2 className="text-5xl md:text-5xl mr-200 font-semibold text-[#61A9E5] mb-13 text-center">
+      <h2 className=" md:text-4xl mr-225 font-semibold text-[#61A9E5] mb-13 text-center">
         Why Choosing Us?
       </h2>
 

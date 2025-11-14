@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Menu QR - Generate QR Codes for Your Restaurant Menu",
+  title: "Scan Now",
   description: "Create, customize, and share QR codes that open your restaurant menu instantly. No apps. No hassle.",
 };
 

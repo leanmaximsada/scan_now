@@ -1,8 +1,14 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 
 const VerifyEmailPage: React.FC = () => {
+  const router = useRouter();
+
+  const handleVerify = () => {
+    router.push('/page/rigester/register/welcome');
+  };
   return (
     <div className="min-h-screen bg-[#F0F8FF] flex flex-col items-center justify-center p-6 relative">
       {/* Back Arrow */}
@@ -52,7 +58,10 @@ const VerifyEmailPage: React.FC = () => {
         {/* Action Buttons */}
         <div className="flex justify-center gap-4">
           <button className="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
-          <button className="px-6 py-2 bg-[#38B6FF] text-white font-medium rounded-md shadow hover:brightness-95 transition">
+          <button 
+            onClick={handleVerify}
+            className="px-6 py-2 bg-[#38B6FF] text-white font-medium rounded-md shadow hover:brightness-95 transition"
+          >
             Verify
           </button>
         </div>

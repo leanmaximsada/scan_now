@@ -1,301 +1,181 @@
-import React from "react";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
-const LandingPage: React.FC = () => {
-  const currentYear = new Date().getFullYear();
-
+export default function Home() {
   return (
-    <div className="min-h-screen bg-[#f1fffe] text-slate-800">
-      {/* Header */}
-      <header className="sticky top-0 z-30 bg-[#f1fffe]/80 backdrop-blur border-b border-slate-200/60">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2">
-            <img src="/logo/logo.png" alt="Menu QR" className="h-12 w-auto" />
-          </a>
+    <div className="min-h-screen bg-[#EFFFFF]">
+      <Navbar />
 
-          <nav className="hidden md:flex items-center gap-8 text-sm">
-            <a href="#features" className="hover:text-[#38b6ff]">
-              Features
-            </a>
-            <a href="#how-it-works" className="hover:text-[#38b6ff]">
-              How it works
-            </a>
-            <a href="#pricing" className="hover:text-[#38b6ff]">
-              Pricing
-            </a>
-          </nav>
+      <section className="flex items-start gap-8 mt-10 px-8">
+        <div className="flex-1 text-left">
+          <h1 className="text-5xl ml-30 font-bold text-gray-900">
+            Effortless Digital Menus
+          </h1>
+          <p className="text-gray-900 ml-30 mt-4">
+            Simple Digides for your restaurant, Fast and convince.
+          </p>​​
 
-          <div className="flex items-center gap-3">
-            <a
-              href="/login"
-              className="hidden sm:inline-flex px-4 py-2 rounded-lg border border-[#38b6ff] text-[#38b6ff] hover:bg-[#38b6ff]/10 transition"
-            >
-              Sign in
-            </a>
-            <a
-              href="/page/rigester/getstart"
-              className="inline-flex px-4 py-2 rounded-lg bg-[#38b6ff] text-white hover:brightness-95 shadow-sm shadow-[#38b6ff]/30 transition"
-            >
-              Get started
-            </a>
-          </div>
-        </div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-[#38b6ff]/10 blur-3xl"></div>
-        <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-[#38b6ff]/10 blur-3xl"></div>
-
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-24 grid lg:grid-cols-2 gap-10 items-center">
-          {/* Hero Text */}
-          <div>
-            <span className="inline-flex items-center gap-2 rounded-full bg-[#38b6ff]/10 px-3 py-1 text-xs font-medium text-[#38b6ff] ring-1 ring-inset ring-[#38b6ff]/20">
-              Fast • Simple • Contactless
-            </span>
-            <h1 className="mt-4 text-4xl sm:text-5xl font-extrabold leading-tight">
-              Generate menu QR codes in seconds
-            </h1>
-            <p className="mt-4 text-slate-600">
-              Create, customize, and share QR codes that open your restaurant
-              menu instantly. No apps. No hassle.
-            </p>
-
-            <div className="mt-8 flex flex-col sm:flex-row gap-3">
-              <a
-                href="/page/rigester/getstart"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#38b6ff] text-white font-medium hover:brightness-95 shadow-md shadow-[#38b6ff]/30 transition"
-              >
-                Create free QR
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                  />
-                </svg>
-              </a>
-              <a
-                href="#demo"
-                className="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-[#38b6ff] text-[#38b6ff] bg-white/70 hover:bg-[#38b6ff]/10 transition"
-              >
-                Live demo
-              </a>
-            </div>
-
-            <div className="mt-6 flex items-center gap-6 text-sm text-slate-500">
-              <div className="flex items-center gap-2">
-                <span className="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>{" "}
-                No app required
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>{" "}
-                Unlimited scans
-              </div>
-            </div>
-          </div>
-
-          {/* Preview Card */}
-          <div id="demo" className="relative">
-            <div className="mx-auto max-w-md">
-              <div className="rounded-2xl bg-white shadow-xl ring-1 ring-slate-200 overflow-hidden">
-                <div className="bg-gradient-to-br from-[#38b6ff]/15 to-[#38b6ff]/0 p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-slate-500">Your Restaurant</p>
-                      <p className="font-semibold">Digital Menu</p>
-                    </div>
-
-                    {/* QR Preview */}
-                    <div className="h-20 w-20 rounded-lg bg-white ring-1 ring-[#38b6ff]/30 p-2 flex items-center justify-center">
-                      <svg
-                        viewBox="0 0 64 64"
-                        className="h-full w-full text-slate-800"
-                      >
-                        <rect width="64" height="64" fill="white" />
-                        <rect x="4" y="4" width="18" height="18" fill="currentColor" />
-                        <rect x="42" y="4" width="18" height="18" fill="currentColor" />
-                        <rect x="4" y="42" width="18" height="18" fill="currentColor" />
-                        <rect x="28" y="28" width="8" height="8" fill="currentColor" />
-                        <rect x="42" y="42" width="10" height="10" fill="currentColor" />
-                        <rect x="28" y="46" width="6" height="6" fill="currentColor" />
-                        <rect x="50" y="28" width="6" height="6" fill="currentColor" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-6 grid grid-cols-6 gap-3">
-                  <div className="col-span-4 space-y-2">
-                    <div className="h-4 w-32 bg-slate-200 rounded"></div>
-                    <div className="h-3 w-56 bg-slate-200 rounded"></div>
-                    <div className="h-3 w-48 bg-slate-200 rounded"></div>
-                    <div className="h-4 w-28 bg-slate-200 rounded mt-4"></div>
-                    <div className="h-3 w-52 bg-slate-200 rounded"></div>
-                    <div className="h-3 w-40 bg-slate-200 rounded"></div>
-                  </div>
-                  <div className="col-span-2">
-                    <div className="h-28 w-full rounded-lg bg-[#38b6ff]/10 ring-1 ring-[#38b6ff]/20"></div>
-                  </div>
-                </div>
-
-                <div className="px-6 pb-6">
-                  <button className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#38b6ff] text-white hover:brightness-95 transition">
-                    Scan to view menu
-                  </button>
-                </div>
-              </div>
-              <p className="mt-3 text-center text-xs text-slate-500">
-                Preview only. Customize branding, colors, and logos.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section
-        id="features"
-        className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14"
-      >
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            {
-              title: "Instant QR generation",
-              desc: "Create QR codes that link to your digital menu in seconds.",
-              icon: (
-                <path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM16 13h4v4h-4z" />
-              ),
-            },
-            {
-              title: "Custom branding",
-              desc: "Use your logo and colors to match your brand.",
-              icon: <path d="M12 3l8 4v6c0 5-3.5 7.5-8 8-4.5-.5-8-3-8-8V7l8-4z" />,
-            },
-            {
-              title: "Multi-language menus",
-              desc: "Serve customers in their language with one QR code.",
-              icon: <path d="M3 3h8v8H3zM13 3h8v8h-8zM3 13h8v8H3zM13 13h8v8h-8z" />,
-            },
-            {
-              title: "Scan analytics",
-              desc: "Track scans by time and location to learn usage.",
-              icon: <path d="M5 3h14v2H5zM7 8h10v2H7zM9 13h6v2H9zM11 18h2v2h-2z" />,
-            },
-          ].map((feature, i) => (
-            <div
-              key={i}
-              className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200"
-            >
-              <div className="h-10 w-10 rounded-lg bg-[#38b6ff]/10 text-[#38b6ff] flex items-center justify-center mb-4">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  {feature.icon}
-                </svg>
-              </div>
-              <h3 className="font-semibold">{feature.title}</h3>
-              <p className="mt-2 text-sm text-slate-600">{feature.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section
-        id="how-it-works"
-        className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14"
-      >
-        <h2 className="text-2xl font-bold text-center">How it works</h2>
-        <div className="mt-8 grid md:grid-cols-3 gap-6">
-          {[
-            {
-              step: "Step 1",
-              title: "Add your menu",
-              desc: "Upload PDF, link, or build with our editor.",
-            },
-            {
-              step: "Step 2",
-              title: "Customize QR",
-              desc: "Choose colors, logo, and frame styles.",
-            },
-            {
-              step: "Step 3",
-              title: "Print & share",
-              desc: "Download high-res codes for tables, flyers, and more.",
-            },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200"
-            >
-              <div className="text-sm font-medium text-[#38b6ff]">
-                {item.step}
-              </div>
-              <h3 className="mt-1 font-semibold">{item.title}</h3>
-              <p className="mt-2 text-sm text-slate-600">{item.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Pricing */}
-      <section
-        id="pricing"
-        className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14"
-      >
-        <div className="rounded-3xl bg-white shadow-lg ring-1 ring-slate-200 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div>
-            <h3 className="text-xl font-bold">Start free. Upgrade anytime.</h3>
-            <p className="mt-2 text-slate-600 text-sm">
-              Free plan includes unlimited scans and basic customization.
+          <div className="text-center ml-110 mt-8">
+            <button className="bg-[#61A9E5] text-white px-8 h-14 py-3 rounded-full font-bold shadow-md hover:bg-[#2e9be0]">
+              Create Your Free QR Menu
+            </button>
+            <p className="mt-4 underline decoration-double text-gray-700 cursor-pointer hover:text-gray-900">
+              See how it work
             </p>
           </div>
-          <div className="flex items-center gap-3">
-            <a
-              href="/page/rigester/getstart"
-              className="inline-flex px-5 py-2.5 rounded-lg bg-[#38b6ff] text-white hover:brightness-95 shadow-sm shadow-[#38b6ff]/30 transition"
-            >
-              Create free account
-            </a>
-            <a
-              href="/pricing"
-              className="inline-flex px-5 py-2.5 rounded-lg border border-[#38b6ff] text-[#38b6ff] hover:bg-[#38b6ff]/10 transition"
-            >
-              View pricing
-            </a>
-          </div>
+        </div>
+
+        <div className="flex-shrink-0 mt-9">
+          <img src="/logo/qrandphone.png" alt="QR Icon" className="w-70  mr-40" />
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-200/70">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
-          <p>© {currentYear} Menu QR. All rights reserved.</p>
-          <div className="flex items-center gap-6">
-            <a href="/terms" className="hover:text-[#38b6ff]">
-              Terms
-            </a>
-            <a href="/privacy" className="hover:text-[#38b6ff]">
-              Privacy
-            </a>
-            <a href="/contact" className="hover:text-[#38b6ff]">
-              Contact
-            </a>
+      <section className="flex justify-center gap-15 mt-8 px-8 flex-wrap">
+        {[
+          {
+            icon: "/logo/qr.png",
+            title: "Create your QR",
+            text: "Create QR Code For Customer Ordering, Easy and fast.",
+          },
+          {
+            icon: "/logo/list.png",
+            title: "Add your menu",
+            text: "Add Your dished to the menu.",
+          },
+          {
+            icon: "/logo/share.png",
+            title: "Customize & Share",
+            text: "Customize and share with friend.",
+          },
+        ].map((card, i) => (
+          <div
+            key={i}
+            className="bg-white w-80 rounded-xl shadow-md p-5 text-left hover:shadow-lg transition"
+          >
+            <img src={card.icon} alt="" className=" w-10 mb-3" />
+            <h3 className="font-semibold text-gray-800">{card.title}</h3>
+            <p className="text-xs text-gray-800 mt-1">{card.text}</p>
+          </div>
+        ))}
+      </section>
+
+      {/* part2 */}
+      <div className="flex justify-left gap-15 mt-8 px-8 flex-wrap" >
+        <h1 className="font-semibold text-[#61A9E5] flex justify-center gap-15 text-5xl mt-8 px-30 flex-wrap">How it work!!!</h1>
+      </div>
+       <section className="bg-[#EFFFFF] py-16 px-6 flex justify-center">
+      <div className="relative bg-white shadow-lg rounded-2xl max-w-270 w-full h-90 flex flex-col md:flex-row items-center p-8 md:p-10">
+        
+        {/* Left decorative flowers */}
+        <img
+          src="/logo/romdoul.png"
+          alt="flower left"
+          className="absolute left-[-180px] bottom-[170px] w-50 "
+        />
+        <img
+          src="/logo/romdoul.png"
+          alt="flower right"
+          className="absolute right-[-140px] top-[200px] w-50 "
+        />
+
+        {/* Video thumbnail / play button */}
+        <div className="bg-black w-full md:w-90 h-60 aspect-video flex justify-center items-center rounded-xl overflow-hidden mb-6 md:mb-0 md:mr-8">
+          <button className="bg-white rounded-full p-5 shadow-lg">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-10 w-10 text-black"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </button>
+        </div>
+        
+
+        {/* Text section */}
+        <div className="md:w-1/2 text-gray-800">
+          <ol className="text-xl list-decimal pl-5 space-y-2">
+            <li>
+              <span className="font-semibold">Create QR Code</span> – Generate your unique QR for your restaurant.
+            </li>
+            <li>
+              <span className="font-semibold">Add Menu</span> – Upload your dishes, prices, and details easily.
+            </li>
+            <li>
+              <span className="font-semibold">Customize</span> – Add your logo and colors to match your brand.
+            </li>
+            <li>
+              <span className="font-semibold">Share</span> – Print or display the QR so customers can scan and order instantly.
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+{/* PART3                                                       PART3*/}
+    <div className=" min-h-screen flex flex-col items-center justify-center px-6 py-10">
+      
+      <h2 className="text-5xl md:text-5xl mr-200 font-semibold text-[#61A9E5] mb-13 text-center">
+        Why Choosing Us?
+      </h2>
+
+      {/* Content Card */}
+      <div className="flex flex-col md:flex-row items-center md:items-start gap-5 max-w-6xl">
+        {/* Left side - icons (outside the box) */}
+        <div className="flex  flex-col space-y-6 flex-shrink-0">
+          <img src="/logo/light.png" alt="Light bulb" className="mt-5 w-45 h-45" />
+          <img src="/logo/thinking.png" alt="Thinking" className="w-45 h-45" />
+        </div>
+
+        {/* White box with text */}
+        <div className="bg-white shadow-md rounded-xl p-3 md:p-7 flex-1">
+          <div className="text-gray-800 font-sans leading-relaxed text-base md:text-lg">
+          <p className="mb-1 ">
+            We believe going digital should be simple, fast, and stress-free. That’s why we’ve
+            built an easy way for restaurants to create and share beautiful QR code menus — no apps,
+            no tech skills, no hassle.
+          </p>
+          <p className="mb-1">
+            With our platform, you can turn your menu into a digital experience in just minutes.
+            Upload your menu, customize your colors and logo, and get a QR code that’s ready to
+            print or share online. It’s that easy.
+          </p>
+          <p className="mb-1">
+            Your customers will love it too. They can scan the QR code and view your menu instantly
+            on their phone — contactless, convenient, and always up to date. No more outdated paper
+            menus or reprints when prices change.
+          </p>
+          <p className="mb-1">
+            You’ll save time, cut printing costs, and boost sales by giving your customers a
+            smoother experience. Whether you run a small café or a busy restaurant, our system helps
+            you look more professional and modern.
+          </p>
+          <p className="mb-1">
+            Plus, you get insights that help your business grow — see how often your QR codes are
+            scanned and understand what’s working best.
+          </p>
+          <p>
+            Simple to set up, easy to manage, and designed to impress — we help you bring your menu
+            into the digital age while keeping things effortless.
+          </p>
           </div>
         </div>
-      </footer>
+      </div>
+
+      {/* Thank You Section */}
+      <div className="mt-30 text-center">
+        <img src="/logo/ty.png" className="h-30" />
+        
+        <div className="flex justify-center mb-6">
+          <div className="w-16 border-t-2 border-gray-400"></div>
+        </div>
+      </div>
+
+      
+    </div>
+
+      <Footer />
     </div>
   );
-};
-
-export default LandingPage;
+}

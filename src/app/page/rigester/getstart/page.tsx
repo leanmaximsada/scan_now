@@ -17,9 +17,12 @@ const GetStarted: React.FC = () => {
           >
             Register
           </a>
-          <button className="w-full py-4 px-6 bg-[#38B6FF] text-white font-bold rounded-lg border border-gray-300 shadow-sm hover:brightness-95 transition">
+          <a 
+            href="/page/login"
+            className="w-full py-4 px-6 bg-[#38B6FF] text-white font-bold rounded-lg border border-gray-300 shadow-sm hover:brightness-95 transition block text-center"
+          >
             Login
-          </button>
+          </a>
         </div>
       </div>
     </div>

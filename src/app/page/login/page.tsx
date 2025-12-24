@@ -44,9 +44,7 @@ const MenuPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#EFFFFF] text-slate-800 font-sans relative overflow-hidden">
         <Navbar1/>
-     
-
-      <div className="flex flex-col lg:flex-row h-[calc(100vh-80px)]">
+       <div className="flex flex-col lg:flex-row h-[calc(100vh-80px)]">
         {/* Main Content */}
         <div className="flex-1 px-8 py-4 overflow-y-auto scrollbar-hide">
           {/* Search and Profile */}
@@ -125,7 +123,8 @@ const MenuPage: React.FC = () => {
         </div>
 
         {/* Sidebar / Cart */}
-        <div className="w-full lg:w-96 bg-[#EFFFFF] backdrop-blur-sm border-l border-slate-100 p-6 flex flex-col h-full">
+        <div className="w-full lg:w-96 bg-[#EFFFFF]
+         backdrop-blur-sm border-l border-slate-100 p-6 flex flex-col h-full">
           <div className="flex items-center justify-between mb-8 border-b border-slate-100 pb-4">
              <h2 className="text-2xl font-serif font-bold text-[#1e3a8a]">My Cart</h2>
              <span className="text-2xl  font-bold text-[#1e3a8a]">{total.toFixed(2)}$</span>

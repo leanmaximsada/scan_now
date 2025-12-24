@@ -7,19 +7,19 @@
           </div>
 
           
-          <div className="flex space-x-30 text-gray-700 mt-3 mb-3">
-            <a href="#" className="text-l" >Example of Menu</a>
-            <a href="#" className="text-l" >Pricing</a>
-            <a href="#" className="text-l" >Contact us</a>
+          <div className="flex space-x-20 text-gray-700 mt-3 mb-3">
+            <a href="/page/examplemenu" className="text-l hover:text-[#38B6FF]" >Example of Menu</a>
+            <a href="/page/pricing" className="text-l hover:text-[#38B6FF]">Pricing</a>
+            <a href="/page/contact" className="text-l hover:text-[#38B6FF]" >Contact us</a>
           </div>
     
-          <div className="flex space-x-4">
-            <button className="border-2 border-black px-13 py-3 h-14 rounded-xl hover:bg-gray-100 text-lg text-[#2e9be0] font-sans font-bold">
+          <div className="flex items-center gap-5">
+            <a href="/login" className="hidden sm:inline-flex px-4 py-2 rounded-lg border border-black text-[#38b6ff] hover:bg-[#38b6ff]/10 transition">
               Sign in
-            </button>
-            <button className="bg-[#61A9E5] text-white px-10 py-2 rounded-xl hover:bg-[#2e9be0] text-lg text-white foont-sans font-bold">
-              Get Started
-            </button>
+            </a>
+            <a href="/page/rigester/getstart" className="inline-flex px-4 py-2 rounded-lg bg-[#38b6ff] text-white hover:brightness-95 shadow-sm shadow-[#38b6ff]/30 transition">
+              Get started
+            </a>
           </div>
         </nav>
       );

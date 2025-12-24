@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Footer from "../../components/Footer";
+import Navbar1 from "../../components/Navbar1";
 
 const MenuPage: React.FC = () => {
   const router = useRouter();
@@ -40,38 +42,9 @@ const MenuPage: React.FC = () => {
   const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (
-    <div className="min-h-screen bg-[#f0fbfd] text-slate-800 font-sans relative overflow-hidden">
-      {/* Background Flowers (Bottom) */}
-      <div className="absolute bottom-0 left-0 w-64 h-64 pointer-events-none opacity-50">
-         <svg viewBox="0 0 200 200" className="w-full h-full text-[#a5dcf8] fill-current">
-            <path d="M100 100 C 50 150, 50 200, 0 200 L 100 200 Z" />
-            <path d="M100 100 C 150 150, 150 200, 200 200 L 100 200 Z" />
-            <circle cx="100" cy="180" r="20" className="text-[#8bcff5]" />
-         </svg>
-      </div>
-      <div className="absolute bottom-0 right-0 w-64 h-64 pointer-events-none opacity-50">
-         <svg viewBox="0 0 200 200" className="w-full h-full text-[#a5dcf8] fill-current transform scale-x-[-1]">
-            <path d="M100 100 C 50 150, 50 200, 0 200 L 100 200 Z" />
-            <path d="M100 100 C 150 150, 150 200, 200 200 L 100 200 Z" />
-            <circle cx="100" cy="180" r="20" className="text-[#8bcff5]" />
-         </svg>
-      </div>
-
-
-      {/* Header */}
-      <header className="bg-[#f0fbfd] px-8 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <img src="/logo/logo.png" alt="Scan Now" className="h-12 w-auto" />
-        </div>
-        
-        <nav className="hidden md:flex items-center gap-12 text-sm font-medium text-slate-700">
-          <a href="#" className="hover:text-[#38b6ff]">Example of Menu</a>
-          <a href="#" className="hover:text-[#38b6ff]">Pricing</a>
-          <a href="#" className="hover:text-[#38b6ff]">Contact us</a>
-        </nav>
-
-        <div className="w-12"></div> {/* Spacer for centering */}
-      </header>
+    <div className="min-h-screen bg-[#EFFFFF] text-slate-800 font-sans relative overflow-hidden">
+        <Navbar1/>
+     
 
       <div className="flex flex-col lg:flex-row h-[calc(100vh-80px)]">
         {/* Main Content */}
@@ -85,10 +58,7 @@ const MenuPage: React.FC = () => {
             </div>
             
             <div className="relative flex-1 max-w-md">
-              <input 
-                type="text" 
-                placeholder="Search" 
-                className="w-full bg-[#f5f7fa] border-none rounded-full py-2 px-4 pl-10 text-sm focus:ring-2 focus:ring-[#38b6ff] outline-none"
+              <input type="text" placeholder="Search" className="w-full bg-[#f5f7fa] border-none rounded-full py-2 px-4 pl-10 text-sm focus:ring-2 focus:ring-[#38b6ff] outline-none"
               />
               <svg className="absolute left-3 top-2.5 h-4 w-4 text-[#38b6ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -140,13 +110,6 @@ const MenuPage: React.FC = () => {
 
           {/* Famous Food */}
           <div>
-             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-serif font-medium text-slate-800">Famous Food</h2>
-              <div className="flex gap-12 text-slate-300 text-xl font-bold select-none">
-                 <span className="text-slate-100">Checkout</span>
-                 <span className="text-slate-100">Checkout</span>
-              </div>
-            </div>
 
             <div className="grid grid-cols-3 gap-6">
               {famousFood.map((food) => (
@@ -162,7 +125,7 @@ const MenuPage: React.FC = () => {
         </div>
 
         {/* Sidebar / Cart */}
-        <div className="w-full lg:w-96 bg-white/80 backdrop-blur-sm border-l border-slate-100 p-6 flex flex-col h-full">
+        <div className="w-full lg:w-96 bg-[#EFFFFF] backdrop-blur-sm border-l border-slate-100 p-6 flex flex-col h-full">
           <div className="flex items-center justify-between mb-8 border-b border-slate-100 pb-4">
              <h2 className="text-2xl font-serif font-bold text-[#1e3a8a]">My Cart</h2>
              <span className="text-2xl  font-bold text-[#1e3a8a]">{total.toFixed(2)}$</span>
@@ -226,6 +189,7 @@ const MenuPage: React.FC = () => {
             </svg>
          </button>
       </div>
+      <Footer />
     </div>
   );
 };

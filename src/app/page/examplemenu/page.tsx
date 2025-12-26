@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { User, Home, Bookmark, MoreHorizontal, Search, Check, Plus } from "lucide-react";
 import Footer from "../../components/Footer";
+import Navbar1 from "../../components/Navbar1";
 
 const menuItems = [
   { id: 1, name: "Soup", image: "/logo/bay srob.jpg" }, // Using placeholders based on availability
@@ -20,23 +21,8 @@ const menuItems = [
 
 const ExampleMenuPage = () => {
   return (
-    <div className="min-h-screen bg-[#F0FEFF] flex flex-col font-sans">
-      {/* Custom Header */}
-      <nav className="flex justify-between items-center px-8 py-6 bg-[#F0FEFF]">
-        <div className="flex items-center">
-          <img src="/logo/logo.png" alt="Scan Now Logo" className="w-16 h-auto object-contain" />
-        </div>
-        
-        <div className="flex space-x-16 text-gray-700 font-medium text-sm md:text-base">
-          <Link href="/page/examplemenu" className="hover:text-[#38B6FF]">Example of Menu</Link>
-          <Link href="/page/pricing" className="hover:text-[#38B6FF]">Pricing</Link>
-          <Link href="/page/contact" className="hover:text-[#38B6FF]">Contact us</Link>
-        </div>
-        
-        {/* Empty div for spacing balance if needed, or user profile if logged in */}
-        <div className="w-16"></div>
-      </nav>
-
+    <div className="min-h-screen bg-[#EFFFFF] flex flex-col font-sans">
+      <Navbar1/>
       {/* Main Content */}
       <main className="flex-grow flex justify-center items-start p-4 md:p-8">
         <div className="w-full max-w-[1400px] bg-gradient-to-r from-white via-[#E6F7FF] to-[#38B6FF] rounded-[40px] shadow-2xl overflow-hidden flex min-h-[900px]">

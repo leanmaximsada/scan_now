@@ -3,35 +3,15 @@
 import React from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight, Share, Download } from 'lucide-react';
+import Navbar1 from "../../../components/Navbar1";
+import Footer from "../../../components/Footer";
 
 const QRCodePage = () => {
   return (
-    <div className="min-h-screen bg-[#F0FDFA] flex flex-col font-sans">
-      {/* Header */}
-      <header className="w-full px-8 py-4 flex items-center justify-between bg-[#F0FDFA]">
-        <div className="flex flex-col items-center">
-          <div className="relative w-10 h-10">
-             {/* Assuming logo.png or logo.svg is the icon. Using logo.png based on file list */}
-            <Image 
-              src="/logo/logo.png" 
-              alt="Scan Now Logo" 
-              width={40} 
-              height={40}
-              className="object-contain"
-            />
-          </div>
-          <span className="text-[#38BDF8] text-xs font-bold mt-1">Scan Now</span>
-        </div>
-        
-        <nav className="hidden md:flex gap-12 text-sm font-medium text-gray-700">
-          <a href="#" className="hover:text-[#38BDF8]">Example of Menu</a>
-          <a href="#" className="hover:text-[#38BDF8]">Pricing</a>
-          <a href="#" className="hover:text-[#38BDF8]">Contact us</a>
-        </nav>
-        
-        {/* Placeholder for right side alignment if needed, or just empty to balance flex */}
-        <div className="w-10 hidden md:block"></div>
-      </header>
+    <div className="min-h-screen bg-[#EFFFFF] flex flex-col font-sans">
+      <Navbar1 />
+      <div className="w-10 hidden md:block"></div>
+     
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center p-4 relative">
@@ -51,21 +31,25 @@ const QRCodePage = () => {
             {/* Decorative Flowers */}
             {/* Top Right */}
             <div className="absolute -top-8 -right-8 w-24 h-24 z-10">
-              <Image 
-                src="/logo/romdoul.png" 
-                alt="Flower Decoration" 
-                fill
-                className="object-contain opacity-80"
-              />
+              <div className="relative w-full h-full">
+                <Image 
+                  src="/logo/romdoul.png" 
+                  alt="Flower Decoration" 
+                  fill
+                  className="object-contain opacity-80"
+                />
+              </div>
             </div>
             {/* Bottom Left */}
             <div className="absolute -bottom-8 -left-8 w-24 h-24 z-10">
-               <Image 
-                src="/logo/romdoul.png" 
-                alt="Flower Decoration" 
-                fill
-                className="object-contain opacity-80 transform rotate-180"
-              />
+              <div className="relative w-full h-full">
+                <Image 
+                  src="/logo/romdoul.png" 
+                  alt="Flower Decoration" 
+                  fill
+                  className="object-contain opacity-80 transform rotate-180"
+                />
+              </div>
             </div>
 
             {/* Card Content */}
@@ -116,6 +100,7 @@ const QRCodePage = () => {
         </div>
 
       </main>
+      <Footer />
     </div>
   );
 };

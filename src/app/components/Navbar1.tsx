@@ -1,6 +1,6 @@
  export default function Navbar1() {
   return (
-    <nav className="relative flex items-center px-8 py-4 bg-[#EFFFFF] shadow-sm">
+    <nav className="flex justify-between items-center px-8 py-4 bg-[#EFFFFF] shadow-sm">
     
       <div className="flex items-center space-x-2">
         <img src="/logo/logo.png" alt="Scan Now Logo" className="w-16 h-auto object-contain" />

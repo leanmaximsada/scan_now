@@ -5,7 +5,7 @@ import Footer from "../../components/Footer";
 
 const ContactPage = () => {
   return (
-    <div className="min-h-screen bg-[#F0FEFF] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#EFFFFF] flex flex-col font-sans">
       <Navbar />
       
       <main className="flex-grow flex flex-col items-center justify-start pt-20 px-4">

@@ -2,36 +2,24 @@
 
 import React from "react";
 import Link from "next/link";
+import Navbar1 from "../../../../components/Navbar1";
+import Footer from "../../../../components/Footer";
 
 export default function WelcomePage() {
   return (
-    <div className="min-h-screen bg-[#F0F8FF] flex flex-col items-center justify-center p-6 relative">
-      {/* Back Button */}
-      <Link href="/" className="absolute top-6 left-6 p-2 text-[#38B6FF] hover:bg-[#38B6FF]/10 rounded-full transition">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-      </Link>
+     <div className="min-h-screen bg-[#EFFFFF] flex flex-col font-sans relative">
+        <Navbar1 />
 
       {/* Logo Section */}
-      <div className="flex flex-col items-center mb-8 mt-10">
-        <img src="/logo/logo.png" alt="Logo" className="h-40 w-auto mb-3" />
+      <div className="flex-1 flex items-center justify-center px-4 relative">
+        <div className="w-full max-w-sm mx-auto">
+        <div className="flex flex-col items-center mb-8">
+        <img src="/logo/logo.png" alt="Logo" className="h-30 w-auto mb-3" />
         <h1 className="text-2xl font-bold text-[#38B6FF]"></h1>
       </div>
 
       {/* Welcome Card */}
-      <div className="bg-white w-full max-w-md rounded-lg shadow-md p-8 text-center">
+      <div className="bg-white w-full max-w-md rounded-lg shadow-md p-8 text-center border border-gray-300">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Welcome, Ana!</h2>
         <p className="text-gray-600 mb-6">Your account is ready!</p>
 
@@ -58,6 +46,9 @@ export default function WelcomePage() {
           Get Started
         </button>
       </div>
+    </div>
+    </div>
+      <Footer />
     </div>
   );
 }

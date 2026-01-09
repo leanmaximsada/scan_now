@@ -2,14 +2,14 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import Navbar1 from "../../../../components/Navbar1";
-import Footer from "../../../../components/Footer";
+import Footer from "@/app/components/Footer";
+import Navbar1 from "@/app/components/Navbar1";
 
 const VerifyEmailPage: React.FC = () => {
   const router = useRouter();
 
   const handleVerify = () => {
-    router.push('/page/rigester/register/welcome');
+    router.push('/page/welcome');
   };
   return (
        <div className="min-h-screen bg-[#EFFFFF] flex flex-col font-sans relative">

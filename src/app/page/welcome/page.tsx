@@ -2,8 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import Navbar1 from "../../../../components/Navbar1";
-import Footer from "../../../../components/Footer";
+import Navbar1 from "../../components/Navbar1";
+import Footer from "../../components/Footer";
 
 export default function WelcomePage() {
   return (
@@ -42,9 +42,11 @@ export default function WelcomePage() {
         </div>
 
         {/* Get Started Button */}
+        <Link href="/page/about_your_restaurant">
         <button className="w-full py-3 px-6 bg-[#38B6FF] text-white font-medium rounded-lg shadow-md hover:brightness-95 transition">
           Get Started
         </button>
+        </Link>
       </div>
     </div>
     </div>

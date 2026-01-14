@@ -3,7 +3,7 @@ import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import Link from "next/link";
 import React from "react";
-
+// HI1
 
 export default function Home() {
   return (

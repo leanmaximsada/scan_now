@@ -37,9 +37,9 @@ export default function AddFoodPage() {
           <div>
             <label className="block text-black font-medium mb-2">Category</label>
             <div className="flex gap-4">
-              <CategoryIcon icon={<Utensils />} />
-              <CategoryIcon icon={<Wine />} active />
-              <CategoryIcon icon={<IceCream />} />
+              <CategoryIcon icon={<Utensils />} active />
+              <a href="/dashboard/menu/drinks"><CategoryIcon icon={<Wine />} /></a>
+              <a href="/dashboard/menu/desert"><CategoryIcon icon={<IceCream />} /></a>
             </div>
           </div>
 

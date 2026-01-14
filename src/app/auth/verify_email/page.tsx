@@ -12,7 +12,7 @@ const VerifyEmailPage: React.FC = () => {
     router.push('/page/welcome');
   };
   return (
-       <div className="min-h-screen bg-[#EFFFFF] flex flex-col font-sans relative">
+       <div className=" min-h-screen bg-[#EFFFFF] flex flex-col font-sans relative">
   <Navbar1 />
 
   {/* CENTER CONTENT BETWEEN NAVBAR & FOOTER */}
@@ -20,12 +20,12 @@ const VerifyEmailPage: React.FC = () => {
     <div className="w-full max-w-sm mx-auto">
 
       {/* LOGO */}
-      <div className="flex flex-col items-center mb-8">
+      {/* <div className="flex flex-col items-center mb-4 mt-2">
         <img src="/logo/logo.png" alt="Logo" className="h-30 w-auto mb-3" />
-      </div>
+      </div> */}
 
       {/* CARD */}
-      <div className="bg-white w-full rounded-lg shadow-md p-8 text-center border border-gray-300">
+      <div className="relative z-10 bg-white w-full rounded-lg shadow-md p-8 text-center border border-gray-300">
         <h2 className="text-lg font-semibold text-gray-900 mb-2">
           Verify your Email
         </h2>
@@ -39,7 +39,7 @@ const VerifyEmailPage: React.FC = () => {
         <input
           type="text"
           placeholder="--- --- --- --- --- ---"
-          className="w-full border border-gray-300 rounded-lg py-3 px-4 text-center tracking-widest
+          className="w-full text-black border border-gray-300 rounded-lg py-3 px-4 text-center tracking-widest
                      focus:outline-none focus:ring-2 focus:ring-[#38B6FF] focus:border-transparent mb-4"
         />
 
@@ -50,9 +50,11 @@ const VerifyEmailPage: React.FC = () => {
 
         {/* ACTION BUTTONS */}
         <div className="flex justify-center gap-4">
+          <a href="/auth/register">
           <button className="px-4 py-2 text-gray-600 hover:text-gray-800">
             Cancel
           </button>
+          </a>
 
           <button
             onClick={handleVerify}

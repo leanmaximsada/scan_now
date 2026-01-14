@@ -53,9 +53,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             active
           />
           <NavItem
-            href="/dashboard/addtomenu"
+            href="/dashboard/menu/food"
             icon={<UtensilsCrossed size={20} />}
-            label="Add Menu"
+            label="Menu"
           />
           <NavItem
             href="/orders"

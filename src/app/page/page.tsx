@@ -8,12 +8,12 @@ import { useRef } from "react";
 export default function Home() {
   const howitworkRef = useRef<HTMLDivElement | null>(null);
   return (
-    <div className="min-h-screen bg-[#EFFFFF]">
-      <div className="relative">
+    <div className=" min-h-screen bg-[#EFFFFF]">
+      <div className="relative z-10">
         <Navbar />
       </div>
 
-      <section className="flex items-start gap-8 mt-10 px-8">
+      <section className="relative z-10 flex items-start gap-8 mt-10 px-8">
         <div className="flex-1 text-left">
           <h1 className="text-5xl ml-30 font-bold text-gray-900">
             Effortless Digital Menus
@@ -23,7 +23,7 @@ export default function Home() {
           </p>
           ​​
           {/* Optimized Button Container */}
-          <div className="flex flex-col items-center ml-140 mt-8 w-fit">
+          <div className="relative z-10 flex flex-col items-center ml-140 mt-8 w-fit">
             <a href="/auth/login">
               <button className="bg-[#61A9E5] text-white px-8 h-14 py-3 rounded-full font-bold shadow-md hover:bg-[#2e9be0] transition-colors" >
                 Create Your Free QR Menu
@@ -52,7 +52,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex justify-center gap-15 mt-8 px-8 flex-wrap">
+      <section className="relative z-10 flex justify-center gap-15 mt-8 px-8 flex-wrap">
         {[
           {
             icon: "/logo/qr.png",
@@ -82,17 +82,17 @@ export default function Home() {
       </section>
 
       {/* part2 */}
-      <div
+      <div 
         ref={howitworkRef}
         id="howitwork"
         className="flex justify-left gap-15 mt-8 px-8 flex-wrap"
       >
-        <h1 className="font-semibold text-[#61A9E5] flex justify-center gap-15 text-4xl mt-8 px-30 flex-wrap">
+        <h1 className="relative z-10 font-semibold text-[#61A9E5] flex justify-center gap-15 text-4xl mt-8 px-30 flex-wrap">
           How it work!!!
         </h1>
       </div>
-      <section className="bg-[#EFFFFF] py-16 px-6 flex justify-center">
-        <div className="relative bg-white shadow-lg rounded-2xl max-w-270 w-full h-90 flex flex-col md:flex-row items-center p-8 md:p-10">
+      <section className=" bg-[#EFFFFF] py-16 px-6 flex justify-center">
+        <div className="z-10 relative bg-white shadow-lg rounded-2xl max-w-270 w-full h-90 flex flex-col md:flex-row items-center p-8 md:p-10">
           {/* Left decorative flowers */}
           <img
             src="/logo/romdoul.png"
@@ -144,7 +144,7 @@ export default function Home() {
       </section>
 
       {/* PART3                                                       PART3*/}
-      <div className=" min-h-screen flex flex-col items-center justify-center px-6 py-10">
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 py-10">
         <h2 className=" md:text-4xl mr-225 font-semibold text-[#61A9E5] mb-13 text-center">
           Why Choosing Us?
         </h2>
@@ -207,16 +207,34 @@ export default function Home() {
         </div>
 
         {/* Thank You Section */}
-        <div className="mt-30 text-center">
-          <img src="/logo/ty.png" className="h-30" />
+        <div className="w-full flex flex-col md:flex-row items-start md:items-center justify-between gap-6 ">
 
-          <div className="flex justify-center mb-6">
-            <div className="w-16 border-t-2 border-gray-400"></div>
-          </div>
-        </div>
+<div className="flex flex-col space-y-2 ml-30 mt-40 mb-[-20]">
+  <div className="flex space-x-4">
+    <img src="/logo/fb.png" className="w-10 h-10 " />
+    <img src="/logo/yt.png" className="w-10 h-10 " />
+  </div>
+  <p className="text-xs text-black ml-2 mb-[1]">@ Scan_now</p>
+  <p className="ml-2 text-xs text-black underline decoration-double">
+    Private Policy
+  </p>
+</div>
+
+<div className="mt-[-] text-center">
+        <img src="/logo/ty.png" className="h-30" />
+</div>
+
+<div className="flex items-center mr-40 mb-[-220] space-x-4 text-xs text-black">
+  <p>English</p>
+  <p>Help</p>
+</div>
+
+</div>
       </div>
 
       <Footer />
     </div>
   );
 }
+
+

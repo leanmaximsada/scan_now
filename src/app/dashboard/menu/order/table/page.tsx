@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/src/app/api/client';
-import { Database } from '@/src/types/supabase';
+import { supabase } from '@/app/api/client';
+import { Database } from '@/types/supabase';
 import { Plus, Trash2, Copy, QrCode, Loader2 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 

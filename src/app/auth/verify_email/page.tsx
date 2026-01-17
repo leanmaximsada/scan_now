@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Footer from "@/app/components/Footer";
 import Navbar1 from "@/app/components/Navbar1";
 import { supabase } from "@/app/lib/supabase/client";
 
-const VerifyEmailPage: React.FC = () => {
+const VerifyEmailContent: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [otp, setOtp] = useState("");
@@ -280,6 +280,14 @@ const VerifyEmailPage: React.FC = () => {
 
       <Footer />
     </div>
+  );
+};
+
+const VerifyEmailPage: React.FC = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyEmailContent />
+    </Suspense>
   );
 };
 

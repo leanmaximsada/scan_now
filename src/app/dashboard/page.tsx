@@ -1,12 +1,15 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Search, TrendingUp, DollarSign, ShoppingBag, ChevronDown } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { useAuth } from "@/app/hooks/useAuth";
+import { supabase } from "@/app/lib/supabase/client";
 
-// ah ng example data
-const data = [
+// Sample data for different time periods
+const monthlyData = [
   { month: "Jan", sales: 1200 },
   { month: "Feb", sales: 1300 },
   { month: "Mar", sales: 1550 },
@@ -15,11 +18,110 @@ const data = [
   { month: "Jun", sales: 3800 },
   { month: "Jul", sales: 3200 },
   { month: "Aug", sales: 2600 },
+  { month: "Sep", sales: 2900 },
+  { month: "Oct", sales: 3100 },
+  { month: "Nov", sales: 3500 },
   { month: "Dec", sales: 2300 },
 ];
 
+const weeklyData = [
+  { day: "Mon", sales: 450 },
+  { day: "Tue", sales: 520 },
+  { day: "Wed", sales: 480 },
+  { day: "Thu", sales: 610 },
+  { day: "Fri", sales: 780 },
+  { day: "Sat", sales: 920 },
+  { day: "Sun", sales: 850 },
+];
+
+const dailyData = [
+  { hour: "6AM", sales: 120 },
+  { hour: "9AM", sales: 180 },
+  { hour: "12PM", sales: 350 },
+  { hour: "3PM", sales: 280 },
+  { hour: "6PM", sales: 520 },
+  { hour: "9PM", sales: 680 },
+];
+
+const topSellingItems = [
+  { id: 1, img: "/logo/bay srob.jpg", name: "Cheeseburger", sales: 120 },
+  { id: 2, img: "/logo/bay srob.jpg", name: "Pepperoni Pizza", sales: 98 },
+  { id: 3, img: "/logo/bay srob.jpg", name: "Caesar Salad", sales: 86 },
+  { id: 4, img: "/logo/bay srob.jpg", name: "Grilled Salmon", sales: 74 },
+];
 
 export default function Dashboard() {
+  const router = useRouter();
+  const { user } = useAuth();
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [timePeriod, setTimePeriod] = useState<"Monthly" | "Weekly" | "Daily">("Monthly");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const loadProfileImage = async () => {
+      if (!user) return;
+
+      try {
+        // Try to get from users table
+        const { data: userData } = await supabase
+          .from("users")
+          .select("profile_image_url")
+          .eq("id", user.id)
+          .single();
+
+        if (userData?.profile_image_url) {
+          setProfileImageUrl(userData.profile_image_url);
+        } else if (user.user_metadata?.profile_image_url) {
+          setProfileImageUrl(user.user_metadata.profile_image_url);
+        }
+      } catch (err) {
+        // Fallback to metadata
+        if (user.user_metadata?.profile_image_url) {
+          setProfileImageUrl(user.user_metadata.profile_image_url);
+        }
+      }
+    };
+
+    loadProfileImage();
+  }, [user]);
+
+  // Get chart data based on time period
+  const getChartData = () => {
+    switch (timePeriod) {
+      case "Weekly":
+        return weeklyData.map((item) => ({ month: item.day, sales: item.sales }));
+      case "Daily":
+        return dailyData.map((item) => ({ month: item.hour, sales: item.sales }));
+      default:
+        return monthlyData;
+    }
+  };
+
+  // Calculate stats from current data
+  const chartData = getChartData();
+  const totalSales = chartData.reduce((sum, item) => sum + item.sales, 0);
+  const averageSales = Math.round(totalSales / chartData.length);
+  const totalRevenue = totalSales * 1.5; // Assuming average order value multiplier
+  const orderCount = Math.round(totalSales / 25); // Assuming average order size
+
+  // Filter top selling items based on search
+  const filteredTopItems = topSellingItems.filter((item) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Calculate max sales for progress bar
+  const maxSales = Math.max(...topSellingItems.map((item) => item.sales));
+
+  const handleTimePeriodChange = (period: "Monthly" | "Weekly" | "Daily") => {
+    setLoading(true);
+    // Simulate loading delay
+    setTimeout(() => {
+      setTimePeriod(period);
+      setLoading(false);
+    }, 300);
+  };
+
   return (
     
     <div className="flex min-h-screen bg-[#EFFFFF]">
@@ -73,20 +175,31 @@ export default function Dashboard() {
               />  
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder="Search menu items..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="text-black pl-10 pr-4 py-2.5 bg-white border border-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 w-72 shadow-sm transition-all"
               />
             </div>
-            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md cursor-pointer hover:scale-105 transition-transform">
-              {/* Using food1 as a placeholder for profile as requested */}
-              <img
-                src="https://easydrawingguides.com/wp-content/uploads/2024/06/how-to-draw-an-easy-spider-man-featured-image-1200.png"
-                alt="Profile"
-                width={40}
-                height={40}
-                className="object-cover"
-              />
-            </div>
+            <button
+              onClick={() => router.push("/dashboard/profile")}
+              className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md cursor-pointer hover:scale-105 transition-transform focus:outline-none focus:ring-2 focus:ring-[#61A9E5] focus:ring-offset-2"
+              title="Click to edit profile"
+            >
+              {profileImageUrl ? (
+                <img
+                  src={profileImageUrl}
+                  alt="Profile"
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                  <span className="text-sm text-gray-400">👤</span>
+                </div>
+              )}
+            </button>
           </div>
         </header>
 
@@ -95,19 +208,19 @@ export default function Dashboard() {
           <StatCard
             icon={<DollarSign size={22} />}
             label="Total Sales"
-            value="$1,250"
+            value={`$${totalSales.toLocaleString()}`}
             color="bg-blue-50 text-blue-500"
           />
           <StatCard
             icon={<ShoppingBag size={22} />}
             label="Orders"
-            value="153"
+            value={orderCount.toString()}
             color="bg-sky-50 text-sky-400"
           />
           <StatCard
             icon={<TrendingUp size={22} />}
             label="Revenue"
-            value="$8,734"
+            value={`$${totalRevenue.toLocaleString()}`}
             color="bg-blue-50 text-blue-600"
           />
         </div>
@@ -119,14 +232,27 @@ export default function Dashboard() {
               <h3 className="font-bold text-slate-800 text-lg">
                 Sales Overview
               </h3>
-              <button className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-600">
-                Monthly <ChevronDown size={14} />
-              </button>
+              <div className="relative">
+                <button 
+                  onClick={() => {
+                    const period = timePeriod === "Monthly" ? "Weekly" : timePeriod === "Weekly" ? "Daily" : "Monthly";
+                    handleTimePeriodChange(period);
+                  }}
+                  className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-colors"
+                >
+                  {timePeriod} <ChevronDown size={14} />
+                </button>
+              </div>
             </div>
 
             <div className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={data}>
+              {loading ? (
+                <div className="h-full flex items-center justify-center">
+                  <div className="text-slate-400">Loading chart data...</div>
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={chartData}>
                   <defs>
                     <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.1} />
@@ -179,6 +305,7 @@ export default function Dashboard() {
                   />
                 </AreaChart>
               </ResponsiveContainer>
+              )}
             </div>
 
             <div className="mt-6 flex items-center gap-2">
@@ -194,32 +321,23 @@ export default function Dashboard() {
             <h3 className="font-bold text-slate-800 text-lg mb-8">
               Top Selling Items
             </h3>
-            <div className="space-y-7">
-              <FoodItem
-                img="/logo/bay srob.jpg"
-                name="Cheeseburger"
-                sales={120}
-                progress={90}
-              />
-              <FoodItem
-                img="/logo/bay srob.jpg"
-                name="Pepperoni Pizza"
-                sales={98}
-                progress={75}
-              />
-              <FoodItem
-                img="/logo/bay srob.jpg"
-                name="Caesar Salad"
-                sales={86}
-                progress={65}
-              />
-              <FoodItem
-                img="/logo/bay srob.jpg"
-                name="Grilled Salmon"
-                sales={74}
-                progress={55}
-              />
-            </div>
+            {searchQuery && filteredTopItems.length === 0 ? (
+              <div className="text-center py-8 text-slate-400">
+                No items found matching "{searchQuery}"
+              </div>
+            ) : (
+              <div className="space-y-7">
+                {filteredTopItems.map((item) => (
+                  <FoodItem
+                    key={item.id}
+                    img={item.img}
+                    name={item.name}
+                    sales={item.sales}
+                    progress={Math.round((item.sales / maxSales) * 100)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </main>

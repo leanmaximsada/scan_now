@@ -1,9 +1,11 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { LayoutDashboard, UtensilsCrossed, ShoppingBag, Settings } from "lucide-react";
+import { useAuth } from "@/app/hooks/useAuth";
+import { supabase } from "@/app/lib/supabase/client";
 
 // --- 1. Define the NavItem component ---
 interface NavItemProps {
@@ -34,6 +36,38 @@ const NavItem = ({ href = "#", icon, label, active }: NavItemProps) => {
 // --- 2. Your DashboardLayout ---
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user } = useAuth();
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadProfileImage = async () => {
+      if (!user) return;
+
+      try {
+        // Try to get from users table
+        const { data: userData } = await supabase
+          .from("users")
+          .select("profile_image_url")
+          .eq("id", user.id)
+          .single();
+
+        if (userData?.profile_image_url) {
+          setProfileImageUrl(userData.profile_image_url);
+        } else if (user.user_metadata?.profile_image_url) {
+          setProfileImageUrl(user.user_metadata.profile_image_url);
+        }
+      } catch (err) {
+        // Fallback to metadata
+        if (user.user_metadata?.profile_image_url) {
+          setProfileImageUrl(user.user_metadata.profile_image_url);
+        }
+      }
+    };
+
+    loadProfileImage();
+  }, [user]);
+
   return (
     <div className="flex min-h-screen bg-[#EFFFFF]">
       <aside className="w-64 bg-[#EFFFFF] border shadow-black shadow-xs text-slate-400 flex flex-col shrink-0">
@@ -70,8 +104,34 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </nav>
 
         <div className="p-4 border-t border-slate-200">
-          <NavItem icon={<Settings size={20} />} label="Settings" href="/settings" />
+          <NavItem 
+            icon={<Settings size={20} />} 
+            label="Settings" 
+            href="/dashboard/profile"
+            active={pathname === "/dashboard/profile"}
+          />
         </div>
+
+        {/* User Avatar - Clickable to go to profile */}
+        {/* <div className="p-4 border-t border-slate-200 flex justify-center">
+          <button
+            onClick={() => router.push("/dashboard/profile")}
+            className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#61A9E5] shadow-md cursor-pointer hover:scale-105 transition-transform focus:outline-none focus:ring-2 focus:ring-[#61A9E5] focus:ring-offset-2"
+            title="Click to edit profile"
+          >
+            {profileImageUrl ? (
+              <img
+                src={profileImageUrl}
+                alt="Profile"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                <span className="text-xl text-gray-400">👤</span>
+              </div>
+            )}
+          </button>
+        </div> */}
       </aside>
       
       <main className="flex-1">

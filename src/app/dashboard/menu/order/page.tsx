@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Navbar from "@/app/components/Navbar";
 import {
   Search,
@@ -37,11 +38,41 @@ import {
   CircleX,
 } from "lucide-react";
 import { Camera, Clock, Utensils, Wine, IceCream } from "lucide-react";
-import { useState } from "react";
 import { Layer } from "recharts";
+import { useAuth } from "@/app/hooks/useAuth";
+import { supabase } from "@/app/lib/supabase/client";
 
 export default function Menu() {
+  const router = useRouter();
+  const { user } = useAuth();
   const [available, setAvailable] = useState(true);
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadProfileImage = async () => {
+      if (!user) return;
+
+      try {
+        const { data: userData } = await supabase
+          .from("users")
+          .select("profile_image_url")
+          .eq("id", user.id)
+          .single();
+
+        if (userData?.profile_image_url) {
+          setProfileImageUrl(userData.profile_image_url);
+        } else if (user.user_metadata?.profile_image_url) {
+          setProfileImageUrl(user.user_metadata.profile_image_url);
+        }
+      } catch (err) {
+        if (user.user_metadata?.profile_image_url) {
+          setProfileImageUrl(user.user_metadata.profile_image_url);
+        }
+      }
+    };
+
+    loadProfileImage();
+  }, [user]);
   return (
     <div className="flex-1 h-screen overflow-y-auto">
       <div className="flex-1 p-8 overflow-y-auto">
@@ -59,16 +90,25 @@ export default function Menu() {
                 className="text-black pl-10 pr-4 py-2.5 bg-white border border-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 w-72 shadow-sm transition-all"
               />
             </div>
-            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md cursor-pointer hover:scale-105 transition-transform">
-              {/* Using food1 as a placeholder for profile as requested */}
-              <img
-                src="https://easydrawingguides.com/wp-content/uploads/2024/06/how-to-draw-an-easy-spider-man-featured-image-1200.png"
-                alt="Profile"
-                width={40}
-                height={40}
-                className="object-cover"
-              />
-            </div>
+            <button
+              onClick={() => router.push("/dashboard/profile")}
+              className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md cursor-pointer hover:scale-105 transition-transform focus:outline-none focus:ring-2 focus:ring-[#61A9E5] focus:ring-offset-2"
+              title="Click to edit profile"
+            >
+              {profileImageUrl ? (
+                <img
+                  src={profileImageUrl}
+                  alt="Profile"
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                  <span className="text-sm text-gray-400">👤</span>
+                </div>
+              )}
+            </button>
           </div>
         </header>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-5 mb-5">

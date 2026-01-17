@@ -12,6 +12,7 @@ const RegisterPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [restaurantName, setRestaurantName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -37,32 +38,49 @@ const RegisterPage: React.FC = () => {
     }
 
     try {
+      // Sign up the user with Supabase Auth
       const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
             full_name: fullName,
+            user_type: 'client', // Explicitly mark as client
+            restaurant_name: restaurantName,
           },
           emailRedirectTo: `${window.location.origin}/auth/verify_email`,
         },
       });
 
       if (signUpError) {
-        setError(signUpError.message);
+        // Show more detailed error message
+        let errorMessage = signUpError.message;
+        
+        // Check for specific error codes
+        if (signUpError.message.includes("Database error") || signUpError.message.includes("saving new user")) {
+          errorMessage = "Failed to create user account. Please check your connection and try again. If the problem persists, contact support.";
+        }
+        
+        setError(errorMessage);
+        console.error("Sign up error:", signUpError);
         setLoading(false);
         return;
       }
 
       if (data.user) {
+        // The database trigger will automatically create the user record in the users table
+        // when a new user signs up with user_type: 'client' in metadata
+        // No need to manually insert - the trigger handles it with SECURITY DEFINER privileges
+        
         setSuccess(true);
         // Redirect to email verification page
         setTimeout(() => {
           router.push("/auth/verify_email");
         }, 2000);
       }
-    } catch (err) {
-      setError("An unexpected error occurred");
+    } catch (err: any) {
+      const errorMessage = err?.message || "An unexpected error occurred";
+      setError(errorMessage);
       console.error("Registration error:", err);
     } finally {
       setLoading(false);
@@ -116,6 +134,21 @@ const RegisterPage: React.FC = () => {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Enter Your Full Name"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg
+                           focus:outline-none focus:ring-2 focus:ring-[#38B6FF]"
+              />
+            </div>
+
+            {/* Restaurant Name */}
+            <div>
+              <label className="block text-sm font-medium text-black mb-2">
+                Restaurant Name <span className="text-gray-500 text-xs">(Optional)</span>
+              </label>
+              <input
+                type="text"
+                value={restaurantName}
+                onChange={(e) => setRestaurantName(e.target.value)}
+                placeholder="Enter Your Restaurant Name"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg
                            focus:outline-none focus:ring-2 focus:ring-[#38B6FF]"
               />

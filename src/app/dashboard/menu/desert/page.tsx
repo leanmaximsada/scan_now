@@ -4,9 +4,75 @@ import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import { Camera, Clock, Utensils, Wine, IceCream } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/app/hooks/useAuth";
+import { supabase } from "@/app/lib/supabase/client";
 
 export default function AddFoodPage() {
+  const { user } = useAuth();
   const [available, setAvailable] = useState(true);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Image size must be less than 5MB");
+      return;
+    }
+
+    // Show preview immediately
+    const preview = URL.createObjectURL(file);
+    setPreviewUrl(preview);
+
+    setImageUploading(true);
+
+    try {
+      // Create unique filename using timestamp
+      const fileExt = file.name.split(".").pop();
+      const timestamp = Date.now();
+      const fileName = `menu-${timestamp}.${fileExt}`;
+      const filePath = `${user.id}/menu-items/${fileName}`;
+
+      // Upload to Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, file, {
+          cacheControl: "3600",
+          upsert: true,
+        });
+
+      if (uploadError) {
+        console.error("Upload error:", uploadError);
+        throw new Error("Failed to upload image");
+      }
+
+      // Get public URL
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("avatars").getPublicUrl(filePath);
+
+      setImageUrl(publicUrl);
+      // Clean up preview URL
+      URL.revokeObjectURL(preview);
+      setPreviewUrl(null);
+    } catch (err: any) {
+      console.error("Image upload error:", err);
+      alert(err.message || "Failed to upload image");
+      setPreviewUrl(null);
+    } finally {
+      setImageUploading(false);
+    }
+  };
 
   return (
     
@@ -80,12 +146,37 @@ export default function AddFoodPage() {
           </div>
           </div>
 
-          {/* Ingredients Image */}
+          {/* Desert Image Upload */}
           <div>
-            <label className="block text-black font-medium mb-2">Ingredients</label>
-            <div className="border-2 border-dashed rounded-xl h-40 flex items-center justify-center text-gray-400 cursor-pointer hover:border-sky-400">
-              <Camera size={36} />
-            </div>
+            <label className="block text-black font-medium mb-2">Desert Image</label>
+            <label className="block">
+              <div className="border-2 border-dashed rounded-xl h-40 flex items-center justify-center text-gray-400 cursor-pointer hover:border-sky-400 relative overflow-hidden">
+                {previewUrl || imageUrl ? (
+                  <img 
+                    src={previewUrl || imageUrl || undefined} 
+                    alt="Desert preview" 
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <Camera size={36} />
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  disabled={imageUploading}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+                {imageUploading && (
+                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white">
+                    Uploading...
+                  </div>
+                )}
+              </div>
+              <p className="mt-2 text-sm text-gray-500">
+                {imageUploading ? "Uploading..." : "Click to upload image (Max 5MB)"}
+              </p>
+            </label>
           </div>
 
           {/* Preparation Time */}
@@ -93,35 +184,9 @@ export default function AddFoodPage() {
 
           {/* Customs */}
           <div>
-            <label className="block text-black font-medium mb-4">Customs</label>
-
-            <div className="flex items-center gap-3 mb-4">
-              <input type="checkbox" defaultChecked />
-              <span className=" text-black">Available</span>
-            </div>
-
-            <div className="flex items-center gap-3 mb-4">
-              <input type="radio" name="type" />
-              <span className=" text-black">Vegetarian</span>
-            </div>
-
-            {/* Toggle */}
-            <div
-              onClick={() => setAvailable(!available)}
-              className={`w-14 h-7 flex items-center rounded-full cursor-pointer transition ${
-                available ? "bg-green-400" : "bg-gray-300"
-              }`}
-            >
-              <div
-                className={`w-6 h-6 bg-white rounded-full shadow transform transition ${
-                  available ? "translate-x-7" : "translate-x-1"
-                }`}
-              />
-            
-            </div>
-            <a href="/dashboard">
-            <div className="flex justify-center hover-black font-bold items-center w-40 h-10 bg-[#61A9E5] mt-3 rounded-xl">
-                <h1>Cancel</h1>
+            <a href="/dashboard/menu">
+            <div className="mt-38 flex justify-center hover-black font-bold items-center w-40 h-10 bg-[#61A9E5] mt-3 rounded-xl">
+                <h1>Add</h1>
             </div>
             </a>
           </div>

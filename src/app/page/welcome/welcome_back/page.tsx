@@ -1,21 +1,54 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Navbar1 from "../../../components/Navbar1";
 import Footer from "../../../components/Footer";
+import { useAuth } from "@/app/hooks/useAuth";
+import { supabase } from "@/app/lib/supabase/client";
 
 export default function WelcomePage() {
+  const { user } = useAuth();
+  const [userName, setUserName] = useState<string>("User");
+
+  useEffect(() => {
+    const loadUserName = async () => {
+      if (!user) return;
+
+      try {
+        // Try to get full_name from users table
+        const { data: userData } = await supabase
+          .from("users")
+          .select("full_name")
+          .eq("id", user.id)
+          .single();
+
+        if (userData?.full_name) {
+          setUserName(userData.full_name);
+        } else if (user.user_metadata?.full_name) {
+          setUserName(user.user_metadata.full_name);
+        }
+      } catch (err) {
+        // Fallback to metadata if database query fails
+        if (user.user_metadata?.full_name) {
+          setUserName(user.user_metadata.full_name);
+        }
+      }
+    };
+
+    loadUserName();
+  }, [user]);
+
   return (
      <div className="min-h-screen bg-[#EFFFFF] flex flex-col font-sans relative">
         <Navbar1 />
 
       {/* Logo Section */}
-      <div className="flex-1 flex items-center justify-center px-4 relative">
+      <div className="relative z-10 flex-1 flex items-center justify-center px-4 relative mt-[-100]">
         <div className="w-full max-w-sm mx-auto">
         <div className="flex flex-col items-center mb-8">
         <img src="/logo/logo.png" alt="Logo" className="h-30 w-auto mt-2 mb-3" />
-        <h1 className="text-3xl font-bold text-[#61A9E5]">Welcome back, Ana!</h1>
+        <h1 className="text-xl font-bold text-[#61A9E5]">Welcome back, {userName}!</h1>
       
       </div>
 

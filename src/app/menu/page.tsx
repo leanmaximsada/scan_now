@@ -12,19 +12,49 @@ function MenuContent() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchTableInfo() {
-      if (!tableId) return;
-      
-      const { data, error } = await supabase
-        .from('tables')
-        .select('name')
-        .eq('id', tableId)
-        .single();
+    let isMounted = true;
 
-      if (data) setTableName(data.name);
-      setLoading(false);
+    async function fetchTableInfo() {
+      if (!tableId) {
+        if (isMounted) setLoading(false);
+        return;
+      }
+      
+      try {
+        const { data, error } = await supabase
+          .from('tables')
+          .select('name')
+          .eq('id', tableId)
+          .single();
+
+        if (!isMounted) return;
+
+        if (error) {
+          // Don't log abort errors - these happen during component unmount or hot reload
+          if (!error?.message?.includes('AbortError') && !error?.message?.includes('signal is aborted')) {
+            console.error('Error fetching table info:', error?.message || 'Unknown error');
+          }
+        } else if (data) {
+          setTableName(data.name);
+        }
+      } catch (err) {
+        if (isMounted) {
+          // Ignore abort errors from unmounting or hot reload
+          const errorMsg = err?.message || String(err);
+          if (!errorMsg.includes('AbortError') && !errorMsg.includes('signal is aborted')) {
+            console.error('Error fetching table:', errorMsg);
+          }
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
     }
+    
     fetchTableInfo();
+    
+    return () => {
+      isMounted = false;
+    };
   }, [tableId]);
 
   if (loading) return <div className="p-10 text-center">Loading Menu...</div>;

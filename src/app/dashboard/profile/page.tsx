@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase/client";
 import { useAuth } from "@/app/hooks/useAuth";
@@ -8,6 +8,7 @@ import { useAuth } from "@/app/hooks/useAuth";
 export default function ProfilePage() {
   const router = useRouter();
   const { user, loading: authLoading, signOut } = useAuth();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,20 +26,37 @@ export default function ProfilePage() {
   const [imageUploading, setImageUploading] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     if (!authLoading && !user) {
-      router.push("/auth/login");
+      if (isMounted) {
+        router.push("/auth/login");
+      }
       return;
     }
 
     if (user) {
-      loadUserProfile();
+      loadUserProfile(isMounted);
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [user, authLoading, router]);
 
-  const loadUserProfile = async () => {
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  const loadUserProfile = async (isMounted: boolean) => {
     if (!user) return;
 
-    setLoading(true);
+    if (isMounted) setLoading(true);
     try {
       // Get user data from users table
       const { data: userData, error: userError } = await supabase
@@ -46,6 +64,8 @@ export default function ProfilePage() {
         .select("*")
         .eq("id", user.id)
         .single();
+
+      if (!isMounted) return;
 
       // Check if user record doesn't exist or if there's an error
       if (userError) {
@@ -74,6 +94,8 @@ export default function ProfilePage() {
         }
       }
 
+      if (!isMounted) return;
+
       // If we have userData, use it (successful read)
       if (userData) {
         setFullName(userData.full_name || "");
@@ -101,9 +123,11 @@ export default function ProfilePage() {
       // Get email from auth user
       setEmail(user.email || "");
     } catch (err) {
-      console.error("Error loading profile:", err);
+      if (isMounted) {
+        console.error("Error loading profile:", err);
+      }
     } finally {
-      setLoading(false);
+      if (isMounted) setLoading(false);
     }
   };
 
@@ -209,7 +233,8 @@ export default function ProfilePage() {
 
       setProfileImageUrl(publicUrl);
       setSuccess("Profile image updated successfully!");
-      setTimeout(() => setSuccess(null), 3000);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => setSuccess(null), 3000);
     } catch (err: any) {
       const errorMessage = err?.message || "Failed to upload image. Please check storage bucket setup.";
       setError(errorMessage);
@@ -261,7 +286,8 @@ export default function ProfilePage() {
       }
 
       setSuccess("Profile updated successfully!");
-      setTimeout(() => setSuccess(null), 3000);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => setSuccess(null), 3000);
       
       // Reload profile to get latest data
       loadUserProfile();
@@ -307,7 +333,8 @@ export default function ProfilePage() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
-      setTimeout(() => setSuccess(null), 3000);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => setSuccess(null), 3000);
     } catch (err: any) {
       setError(err.message || "Failed to update password");
       console.error("Password update error:", err);

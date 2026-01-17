@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -57,8 +57,11 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [timePeriod, setTimePeriod] = useState<"Monthly" | "Weekly" | "Daily">("Monthly");
   const [loading, setLoading] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadProfileImage = async () => {
       if (!user) return;
 
@@ -70,12 +73,15 @@ export default function Dashboard() {
           .eq("id", user.id)
           .single();
 
+        if (!isMounted) return;
+
         if (userData?.profile_image_url) {
           setProfileImageUrl(userData.profile_image_url);
         } else if (user.user_metadata?.profile_image_url) {
           setProfileImageUrl(user.user_metadata.profile_image_url);
         }
       } catch (err) {
+        if (!isMounted) return;
         // Fallback to metadata
         if (user.user_metadata?.profile_image_url) {
           setProfileImageUrl(user.user_metadata.profile_image_url);
@@ -84,7 +90,19 @@ export default function Dashboard() {
     };
 
     loadProfileImage();
+    return () => {
+      isMounted = false;
+    };
   }, [user]);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   // Get chart data based on time period
   const getChartData = () => {
@@ -116,7 +134,8 @@ export default function Dashboard() {
   const handleTimePeriodChange = (period: "Monthly" | "Weekly" | "Daily") => {
     setLoading(true);
     // Simulate loading delay
-    setTimeout(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
       setTimePeriod(period);
       setLoading(false);
     }, 300);

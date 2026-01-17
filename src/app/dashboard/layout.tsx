@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, UtensilsCrossed, ShoppingBag, Settings } from "lucide-react";
+import { LayoutDashboard, UtensilsCrossed, ShoppingBag, Settings, Box } from "lucide-react";
 import { useAuth } from "@/app/hooks/useAuth";
 import { supabase } from "@/app/lib/supabase/client";
 
@@ -41,6 +41,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadProfileImage = async () => {
       if (!user) return;
 
@@ -52,12 +54,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           .eq("id", user.id)
           .single();
 
+        if (!isMounted) return;
+
         if (userData?.profile_image_url) {
           setProfileImageUrl(userData.profile_image_url);
         } else if (user.user_metadata?.profile_image_url) {
           setProfileImageUrl(user.user_metadata.profile_image_url);
         }
       } catch (err) {
+        if (!isMounted) return;
         // Fallback to metadata
         if (user.user_metadata?.profile_image_url) {
           setProfileImageUrl(user.user_metadata.profile_image_url);
@@ -66,6 +71,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     };
 
     loadProfileImage();
+
+    return () => {
+      isMounted = false;
+    };
   }, [user]);
 
   return (
@@ -100,6 +109,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             icon={<ShoppingBag size={20} />}
             label="Orders"
             active={pathname === "/dashboard/menu/order"}
+          />
+          <NavItem
+            href="/dashboard/menu/order/table"
+            icon={<Box size={20} />}
+            label="Tables"
+            active={pathname === "/dashboard/menu/order/table"}
           />
         </nav>
 

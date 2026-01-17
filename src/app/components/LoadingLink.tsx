@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useLoading } from "../contexts/LoadingContext";
-import { useCallback } from "react";
+import { useCallback, useRef, useEffect } from "react";
 
 interface LoadingLinkProps {
   href: string;
@@ -13,6 +13,7 @@ interface LoadingLinkProps {
 
 const LoadingLink: React.FC<LoadingLinkProps> = ({ href, children, className, onClick }) => {
   const { setLoading } = useLoading();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     if (onClick) {
@@ -24,10 +25,22 @@ const LoadingLink: React.FC<LoadingLinkProps> = ({ href, children, className, on
     
     // Hide loading after navigation (Next.js handles the navigation)
     // Use a timeout as a fallback
-    setTimeout(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
       setLoading(false);
     }, 1000);
   }, [setLoading, onClick]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <Link href={href} className={className} onClick={handleClick}>

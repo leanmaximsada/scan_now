@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/app/api/client';
 import { Database } from '@/types/supabase';
-import { Plus, Trash2, Copy, QrCode, Loader2 } from 'lucide-react';
+import { Plus, Trash2, Copy, QrCode, Loader2, Edit2, Check, X } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 // Types extracted from your Database schema
@@ -17,11 +17,14 @@ export default function TableManagementPage() {
   const [loading, setLoading] = useState(true);
   const [newTableName, setNewTableName] = useState('');
   const [creating, setCreating] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState('');
+  const mountedRef = useRef(true);
 
   // 🔐 Fetch tables for logged-in user
-  const fetchTables = async () => {
+  const fetchTables = async (isMounted = true) => {
     try {
-      setLoading(true);
+      if (isMounted) setLoading(true);
       const { data: { session } } = await supabase.auth.getSession();
 
       if (!session) {
@@ -36,16 +39,23 @@ export default function TableManagementPage() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      if (data) setTables(data);
+      if (isMounted && data) setTables(data);
     } catch (error: any) {
-      console.error('Error fetching tables:', error.message);
+      if (isMounted) {
+        console.error('Error fetching tables:', error?.message || error);
+      }
     } finally {
-      setLoading(false);
+      if (isMounted) setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchTables();
+    mountedRef.current = true;
+    fetchTables(mountedRef.current);
+    
+    return () => {
+      mountedRef.current = false;
+    };
   }, []);
 
   // ➕ Create table
@@ -61,7 +71,7 @@ export default function TableManagementPage() {
       }
 
       const id = uuidv4();
-      const url = `${window.location.origin}/menu?table=${id}`;
+      const url = `${window.location.origin}/dashboard/menu/phscreen?table=${id}`;
 
       const tableData: TableInsert = {
         id,
@@ -77,24 +87,74 @@ export default function TableManagementPage() {
 
       if (error) throw error;
 
-      setNewTableName('');
-      fetchTables();
+      if (mountedRef.current) {
+        setNewTableName('');
+        fetchTables(mountedRef.current);
+      }
     } catch (error: any) {
-      alert('Error creating table: ' + error.message);
+      if (mountedRef.current) {
+        alert('Error creating table: ' + (error?.message || error));
+      }
     } finally {
-      setCreating(false);
+      if (mountedRef.current) setCreating(false);
     }
+  };
+
+  // ✏️ Start editing table number
+  const startEditing = (tableId: string, currentName: string) => {
+    setEditingId(tableId);
+    setEditingName(currentName);
+  };
+
+  // 💾 Update table number
+  const updateTableNumber = async (tableId: string) => {
+    if (!editingName.trim()) {
+      alert('Table name cannot be empty');
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('tables')
+        .update({ name: editingName })
+        .eq('id', tableId);
+
+      if (error) throw error;
+
+      if (mountedRef.current) {
+        setEditingId(null);
+        setEditingName('');
+        // Update local state immediately
+        setTables(tables.map(t => t.id === tableId ? { ...t, name: editingName } : t));
+      }
+    } catch (error: any) {
+      if (mountedRef.current) {
+        alert('Error updating table: ' + (error?.message || error));
+      }
+    }
+  };
+
+  // ❌ Cancel editing
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditingName('');
   };
 
   // 🗑 Delete table
   const deleteTable = async (id: string) => {
     if (!confirm('Are you sure you want to delete this table?')) return;
     
-    const { error } = await supabase.from('tables').delete().eq('id', id);
-    if (error) {
-      alert('Error deleting table: ' + error.message);
-    } else {
-      setTables(prev => prev.filter(t => t.id !== id));
+    try {
+      const { error } = await supabase.from('tables').delete().eq('id', id);
+      if (error) throw error;
+      
+      if (mountedRef.current) {
+        setTables(prev => prev.filter(t => t.id !== id));
+      }
+    } catch (error: any) {
+      if (mountedRef.current) {
+        alert('Error deleting table: ' + (error?.message || error));
+      }
     }
   };
 
@@ -149,26 +209,63 @@ export default function TableManagementPage() {
           {tables.map(table => (
             <div key={table.id} className="bg-white border rounded-xl shadow-sm hover:shadow-md transition-shadow p-5">
               <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="font-bold text-lg text-gray-800">{table.name}</h3>
-                  <p className="text-xs text-gray-500 font-mono">{table.id.split('-')[0]}...</p>
+                <div className="flex-1">
+                  {editingId === table.id ? (
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={editingName}
+                        onChange={(e) => setEditingName(e.target.value)}
+                        autoFocus
+                        className="border border-gray-300 px-2 py-1 rounded text-sm flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                      <button
+                        onClick={() => updateTableNumber(table.id)}
+                        className="p-1 hover:bg-green-100 rounded transition-colors"
+                        title="Save"
+                      >
+                        <Check size={16} className="text-green-600" />
+                      </button>
+                      <button
+                        onClick={cancelEditing}
+                        className="p-1 hover:bg-gray-100 rounded transition-colors"
+                        title="Cancel"
+                      >
+                        <X size={16} className="text-gray-600" />
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <h3 className="font-bold text-lg text-gray-800">{table.name}</h3>
+                      <p className="text-xs text-gray-500 font-mono">{table.id.split('-')[0]}...</p>
+                    </>
+                  )}
                 </div>
-                <div className="flex gap-1">
-                  <button 
-                    onClick={() => copyQR(table.qr_code)}
-                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                    title="Copy Link"
-                  >
-                    <Copy size={16} className="text-gray-600" />
-                  </button>
-                  <button 
-                    onClick={() => deleteTable(table.id)}
-                    className="p-2 hover:bg-red-50 rounded-full transition-colors"
-                    title="Delete"
-                  >
-                    <Trash2 size={16} className="text-red-500" />
-                  </button>
-                </div>
+                {editingId !== table.id && (
+                  <div className="flex gap-1">
+                    <button 
+                      onClick={() => startEditing(table.id, table.name)}
+                      className="p-2 hover:bg-blue-50 rounded-full transition-colors"
+                      title="Edit Table Number"
+                    >
+                      <Edit2 size={16} className="text-blue-600" />
+                    </button>
+                    <button 
+                      onClick={() => copyQR(table.qr_code)}
+                      className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                      title="Copy Link"
+                    >
+                      <Copy size={16} className="text-gray-600" />
+                    </button>
+                    <button 
+                      onClick={() => deleteTable(table.id)}
+                      className="p-2 hover:bg-red-50 rounded-full transition-colors"
+                      title="Delete"
+                    >
+                      <Trash2 size={16} className="text-red-500" />
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="bg-gray-50 p-4 rounded-lg flex justify-center mb-4">

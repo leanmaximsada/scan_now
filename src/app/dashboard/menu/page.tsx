@@ -66,6 +66,8 @@ export default function Menu() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadProfileImage = async () => {
       if (!user) return;
 
@@ -76,12 +78,15 @@ export default function Menu() {
           .eq("id", user.id)
           .single();
 
+        if (!isMounted) return;
+
         if (userData?.profile_image_url) {
           setProfileImageUrl(userData.profile_image_url);
         } else if (user.user_metadata?.profile_image_url) {
           setProfileImageUrl(user.user_metadata.profile_image_url);
         }
       } catch (err) {
+        if (!isMounted) return;
         if (user.user_metadata?.profile_image_url) {
           setProfileImageUrl(user.user_metadata.profile_image_url);
         }
@@ -89,13 +94,18 @@ export default function Menu() {
     };
 
     loadProfileImage();
+    return () => {
+      isMounted = false;
+    };
   }, [user]);
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadMenuItems = async () => {
       if (!user) return;
 
-      setLoading(true);
+      if (isMounted) setLoading(true);
       try {
         const { data, error } = await supabase
           .from("menu_items")
@@ -110,21 +120,31 @@ export default function Menu() {
           .eq("user_id", user.id)
           .order("created_at", { ascending: false });
 
+        if (!isMounted) return;
+
         if (error) {
           console.error("Error loading menu items:", error);
         } else {
           setMenuItems(data || []);
         }
       } catch (err) {
-        console.error("Error loading menu items:", err);
+        if (isMounted) {
+          console.error("Error loading menu items:", err);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     if (user) {
       loadMenuItems();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [user]);
 
   // Filter menu items based on search and category

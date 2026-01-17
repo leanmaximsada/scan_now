@@ -11,31 +11,47 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        const userProfile = await getUserProfile(session.user);
-        setProfile(userProfile);
+    let isMounted = true;
+
+    const initAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!isMounted) return;
+        
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          const userProfile = await getUserProfile(session.user);
+          if (isMounted) setProfile(userProfile);
+        }
+      } catch (error) {
+        if (isMounted) console.error('Auth init error:', error);
+      } finally {
+        if (isMounted) setLoading(false);
       }
-      setLoading(false);
-    });
+    };
+
+    initAuth();
 
     // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!isMounted) return;
+      
       setUser(session?.user ?? null);
       if (session?.user) {
         const userProfile = await getUserProfile(session.user);
-        setProfile(userProfile);
+        if (isMounted) setProfile(userProfile);
       } else {
         setProfile(null);
       }
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      isMounted = false;
+      subscription?.unsubscribe();
+    };
   }, []);
 
   const signOut = async () => {

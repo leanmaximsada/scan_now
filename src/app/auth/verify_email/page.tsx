@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, Suspense, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Footer from "@/app/components/Footer";
 import Navbar1 from "@/app/components/Navbar1";
@@ -13,9 +13,19 @@ const VerifyEmailContent: React.FC = () => {
   const [email, setEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     // Check if user came from email verification link
@@ -37,7 +47,8 @@ const VerifyEmailContent: React.FC = () => {
       if (event === "SIGNED_IN" && session?.user?.email_confirmed_at) {
         setSuccess(true);
         setMessage("Email verified successfully! Redirecting...");
-        setTimeout(() => {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        timeoutRef.current = setTimeout(() => {
           router.push("/page/welcome");
         }, 2000);
       }
@@ -82,7 +93,8 @@ const VerifyEmailContent: React.FC = () => {
       } else {
         setSuccess(true);
         setMessage("Email verified successfully! Redirecting...");
-        setTimeout(() => {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        timeoutRef.current = setTimeout(() => {
           router.push("/page/welcome");
         }, 2000);
       }
@@ -132,7 +144,8 @@ const VerifyEmailContent: React.FC = () => {
       } else {
         setSuccess(true);
         setMessage("Email verified successfully! Redirecting...");
-        setTimeout(() => {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        timeoutRef.current = setTimeout(() => {
           router.push("/page/welcome");
         }, 2000);
       }

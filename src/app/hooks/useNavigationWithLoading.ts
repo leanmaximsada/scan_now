@@ -12,18 +12,25 @@ export const useNavigationWithLoading = () => {
     (path: string, delay: number = 300) => {
       setLoading(true);
       
-      // Use setTimeout to delay hiding the loader (in case of fast navigation)
-      // This ensures the loader is visible for at least `delay` ms
+      let isMounted = true;
+
       const timer = setTimeout(() => {
+        if (!isMounted) return;
+        
         router.push(path);
-        // Hide loading after navigation completes (next.js navigation is async)
-        // We'll use a timeout as a fallback since Next.js App Router doesn't have route events
-        setTimeout(() => {
-          setLoading(false);
+        const navigationTimer = setTimeout(() => {
+          if (isMounted) {
+            setLoading(false);
+          }
         }, 500);
+
+        return () => clearTimeout(navigationTimer);
       }, delay > 0 ? delay : 0);
 
-      return () => clearTimeout(timer);
+      return () => {
+        isMounted = false;
+        clearTimeout(timer);
+      };
     },
     [router, setLoading]
   );

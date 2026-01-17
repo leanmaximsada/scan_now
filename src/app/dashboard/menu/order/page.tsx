@@ -49,6 +49,8 @@ export default function Menu() {
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadProfileImage = async () => {
       if (!user) return;
 
@@ -59,12 +61,15 @@ export default function Menu() {
           .eq("id", user.id)
           .single();
 
+        if (!isMounted) return;
+
         if (userData?.profile_image_url) {
           setProfileImageUrl(userData.profile_image_url);
         } else if (user.user_metadata?.profile_image_url) {
           setProfileImageUrl(user.user_metadata.profile_image_url);
         }
       } catch (err) {
+        if (!isMounted) return;
         if (user.user_metadata?.profile_image_url) {
           setProfileImageUrl(user.user_metadata.profile_image_url);
         }
@@ -72,6 +77,9 @@ export default function Menu() {
     };
 
     loadProfileImage();
+    return () => {
+      isMounted = false;
+    };
   }, [user]);
   return (
     <div className="flex-1 h-screen overflow-y-auto">

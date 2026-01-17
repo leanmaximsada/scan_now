@@ -28,12 +28,16 @@ export default function AddFoodPage() {
 
   // Fetch categories on component mount
   useEffect(() => {
+    let isMounted = true;
+
     const fetchCategories = async () => {
       try {
         const { data, error } = await supabase
           .from('categories')
           .select('id, name, slug')
           .order('name');
+
+        if (!isMounted) return;
 
         if (error) throw error;
         setCategories(data || []);
@@ -48,11 +52,16 @@ export default function AddFoodPage() {
           }
         }
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        if (isMounted) {
+          console.error('Error fetching categories:', error);
+        }
       }
     };
 
     fetchCategories();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

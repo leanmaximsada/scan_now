@@ -1,5 +1,6 @@
 {
-  "installCommand": "pnpm install --no-frozen-lockfile",
+  "installCommand": "corepack enable && pnpm install --no-frozen-lockfile",
   "buildCommand": "pnpm build",
-  "devCommand": "pnpm dev"
+  "devCommand": "pnpm dev",
+  "nodeVersion": "20.x"
 }
